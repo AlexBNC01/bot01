@@ -2,6 +2,7 @@ import telebot
 from telebot import types # для указание типов
 import sqlite3
 
+hot
 
 sessions = {}
 
