@@ -59,7 +59,8 @@ def func1(message):
 def func(message):
     day = [message.chat.id]
     if(message.text == "Вчера"):
-        sessions[message.chat.id].update({'data': datetime.datetime.now() + timedelta(days=2)})
+        d = (datetime.datetime.now() - timedelta(days=1)).strftime("%d.%m.%y %H:%M")
+        sessions[message.chat.id].update({'data': d})
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         btn1 = types.KeyboardButton("День")
         btn2 = types.KeyboardButton("Ночь")
@@ -68,7 +69,8 @@ def func(message):
         bot.register_next_step_handler(message, func2)
 
     elif(message.text == "Сегодня"):
-        sessions[message.chat.id].update({'data': datetime.datetime.now() + datetime.timedelta(days=1)})
+        d = (datetime.datetime.now() - timedelta(days=0)).strftime("%d.%m.%y %H:%M")
+        sessions[message.chat.id].update({'data': d})
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         btn1 = types.KeyboardButton("День")
         btn2 = types.KeyboardButton("Ночь")
@@ -161,7 +163,7 @@ def save_link(message):
     sessions[message.chat.id].update({'gas': message.text})
     input_data = sessions[message.chat.id]
 
-    sessions[message.chat.id].update({'data': data})
+    
     input_data = sessions[message.chat.id]
     print(input_data)
     cursor.execute("INSERT INTO Clock (id, first_name, data, day, objectt, tech, hour, gas) VALUES (?, ?, ?, ?, ?, ?, ?, ?);", (message.chat.id, input_data['first_name'], input_data['data'], input_data['day'], input_data['objectt'], input_data['tech'], input_data['hour'], input_data['gas']))
