@@ -63,8 +63,7 @@ def func(message):
         sessions[message.chat.id].update({'data': d})
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         btn1 = types.KeyboardButton("День")
-        btn2 = types.KeyboardButton("Ночь")
-        markup.add(btn1, btn2)
+        markup.add(btn1)
         bot.send_message(message.chat.id, text="Выберите время суток", reply_markup=markup)
         bot.register_next_step_handler(message, func2)
 
@@ -77,6 +76,8 @@ def func(message):
         markup.add(btn1, btn2)
         bot.send_message(message.chat.id, text="Выберите время суток", reply_markup=markup)
         bot.register_next_step_handler(message, func2)
+
+
 
 @bot.message_handler(content_types=['text'])
 def func2(message):    
