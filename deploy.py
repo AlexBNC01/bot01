@@ -1,21 +1,18 @@
 import telebot
 from telebot import types # для указание типов
 import sqlite3
-import datetime
-from datetime import timedelta
-from datetime import time
-#import pytz
 
 
 sessions = {}
 
-#data = datetime.datetime.now(pytz.timezone("Europe/Moscow")).strftime("%d.%m.%y %H:%M")
+import datetime
+day_time = datetime.datetime.now()
 #day2 = datetime.datetime.today() - datetime.timedelta(days=2)
 #day1 = datetime.datetime.today() - datetime.timedelta(days=1)
 #day0 = datetime.datetime.today() - datetime.timedelta(days=0)
 
 
-connect = sqlite3.connect ("NewForm.db", check_same_thread=False)
+connect = sqlite3.connect ("NewTable.db", check_same_thread=False)
 cursor = connect.cursor()
 connect.execute("""CREATE TABLE IF NOT EXISTS Clock(
 id INTEGER,
@@ -25,13 +22,14 @@ day TEXT,
 objectt TEXT,
 tech TEXT,
 hour INTEGER,
-gas INTEGER
+gas INTEGER, 
+joiningDate INTEGER
 )
 """) 
 connect.commit()
 
 
-bot = telebot.TeleBot('5256798982:AAHXhxQyopyvjF3PnQYSKmtTRiIElV3toYc')
+bot = telebot.TeleBot('')
 @bot.message_handler(commands=['start'])
 def start(message):
     user_id = message.chat.id 
@@ -46,57 +44,36 @@ def func1(message):
     data = [message.chat.id]
     if(message.text == "Начать"):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton("Вчера День")
-        btn2 = types.KeyboardButton("Сегодня Ночь")
-        btn3 = types.KeyboardButton("Сегодня День")
-        markup.add(btn1, btn2, btn3)
+        btn1 = types.KeyboardButton("Вчера")
+        btn2 = types.KeyboardButton("Сегодня")
+        markup.add(btn1, btn2)
         bot.send_message(message.chat.id, text="Выберите день за который заполняете часы", reply_markup=markup)
         bot.register_next_step_handler(message, func) 
 
 @bot.message_handler(content_types=['text'])
 def func(message):
     day = [message.chat.id]
-    if(message.text == "Вчера День"):
-        d = (datetime.datetime.now() + timedelta(minutes=180) - timedelta(days=1)).strftime("%d.%m.%y %H:%M")
-        sessions[message.chat.id].update({'data': d})
-        sessions[message.chat.id].update({'day': message.text})
+    if(message.text == "Вчера"):
+        sessions[message.chat.id].update({'data': datetime.datetime.today() - datetime.timedelta(days=1)})
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton("Восток")
-        btn2 = types.KeyboardButton("Строй инж-г")
-        btn3 = types.KeyboardButton("Дорожники")
-        btn4 = types.KeyboardButton("Газинвест")
-        btn5 = types.KeyboardButton("АСВ")
-        btn6 = types.KeyboardButton("ТНПС")
-        btn7 = types.KeyboardButton("Тагазстрой")
-        btn8 = types.KeyboardButton("База2")да
-        btn9 = types.KeyboardButton("Полистрой")
-        btn10 = types.KeyboardButton("Другое")
-        markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10)
-        bot.send_message(message.chat.id, text="Выберите Объект", reply_markup=markup)
-        bot.register_next_step_handler(message, han) 
+        btn1 = types.KeyboardButton("День")
+        btn2 = types.KeyboardButton("Ночь")
+        markup.add(btn1, btn2)
+        bot.send_message(message.chat.id, text="Выберите время суток", reply_markup=markup)
+        bot.register_next_step_handler(message, func2)
 
-    elif(message.text == "Сегодня Ночь"):
-        d = (datetime.datetime.now() + timedelta(minutes=180) - timedelta(days=1)).strftime("%d.%m.%y %H:%M")
-        sessions[message.chat.id].update({'data': d})
-        sessions[message.chat.id].update({'day': message.text})
+    elif(message.text == "Сегодня"):
+        sessions[message.chat.id].update({'data': datetime.datetime.today() - datetime.timedelta(days=0)})
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton("Восток")
-        btn2 = types.KeyboardButton("Строй инж-г")
-        btn3 = types.KeyboardButton("Дорожники")
-        btn4 = types.KeyboardButton("Газинвест")
-        btn5 = types.KeyboardButton("АСВ")
-        btn6 = types.KeyboardButton("ТНПС")
-        btn7 = types.KeyboardButton("Тагазстрой")
-        btn8 = types.KeyboardButton("База2")
-        btn9 = types.KeyboardButton("Полистрой")
-        btn10 = types.KeyboardButton("Другое")
-        markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10)
-        bot.send_message(message.chat.id, text="Выберите Объект", reply_markup=markup)
-        bot.register_next_step_handler(message, han) 
+        btn1 = types.KeyboardButton("День")
+        btn2 = types.KeyboardButton("Ночь")
+        markup.add(btn1, btn2)
+        bot.send_message(message.chat.id, text="Выберите время суток", reply_markup=markup)
+        bot.register_next_step_handler(message, func2)
 
-    elif(message.text == "Сегодня День"):
-        d = (datetime.datetime.now() + timedelta(minutes=180) - timedelta(days=0)).strftime("%d.%m.%y %H:%M")
-        sessions[message.chat.id].update({'data': d})
+@bot.message_handler(content_types=['text'])
+def func2(message):    
+    if(message.text == "День", "Ночь"):
         sessions[message.chat.id].update({'day': message.text})
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         btn1 = types.KeyboardButton("Восток")
@@ -112,7 +89,6 @@ def func(message):
         markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10)
         bot.send_message(message.chat.id, text="Выберите Объект", reply_markup=markup)
         bot.register_next_step_handler(message, han) 
-
 
 @bot.message_handler(content_types=['text'])
 def han(message):
@@ -180,10 +156,10 @@ def save_link(message):
     sessions[message.chat.id].update({'gas': message.text})
     input_data = sessions[message.chat.id]
 
-    
+    sessions[message.chat.id].update({'joiningDate': day_time})
     input_data = sessions[message.chat.id]
     print(input_data)
-    cursor.execute("INSERT INTO Clock (id, first_name, data, day, objectt, tech, hour, gas) VALUES (?, ?, ?, ?, ?, ?, ?, ?);", (message.chat.id, input_data['first_name'], input_data['data'], input_data['day'], input_data['objectt'], input_data['tech'], input_data['hour'], input_data['gas']))
+    cursor.execute("INSERT INTO Clock (id, first_name, data, day, objectt, tech, hour, gas, joiningDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);", (message.chat.id, input_data['first_name'], input_data['data'], input_data['day'], input_data['objectt'], input_data['tech'], input_data['hour'], input_data['gas'], input_data['joiningDate']))
     connect.commit()
     y_link = message.text
     bot.send_message(message.chat.id, "Сохранил!")
