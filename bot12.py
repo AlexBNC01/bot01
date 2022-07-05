@@ -34,12 +34,13 @@ connect.commit()
 bot = telebot.TeleBot('5256798982:AAHXhxQyopyvjF3PnQYSKmtTRiIElV3toYc')
 @bot.message_handler(commands=['start'])
 def start(message):
-    user_id = message.chat.id 
-    sessions.update({ user_id: {'first_name': message.from_user.first_name} })
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    btn1 = types.KeyboardButton("Начать")
-    markup.add(btn1)
-    bot.send_message(message.chat.id, text="Привет, {0.first_name}! Я посчитаю Часы работы. Просто  пройди опрос после рабочего дня!".format(message.from_user), reply_markup=markup)
+    if(message.text == "/start"):
+        user_id = message.chat.id 
+        sessions.update({ user_id: {'first_name': message.from_user.first_name} })
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn1 = types.KeyboardButton("Начать")
+        markup.add(btn1)
+        bot.send_message(message.chat.id, text="Привет, {0.first_name}! Я посчитаю Часы работы. Просто  пройди опрос после рабочего дня!".format(message.from_user), reply_markup=markup)
 
 @bot.message_handler(content_types=['text'])
 def func1(message):
@@ -52,6 +53,15 @@ def func1(message):
         markup.add(btn1, btn2, btn3)
         bot.send_message(message.chat.id, text="Выберите день за который заполняете часы", reply_markup=markup)
         bot.register_next_step_handler(message, func) 
+
+    elif(message.text == "/start"):
+        user_id = message.chat.id 
+        sessions.update({ user_id: {'first_name': message.from_user.first_name} })
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn1 = types.KeyboardButton("Начать")
+        markup.add(btn1)
+        bot.send_message(message.chat.id, text="Привет, {0.first_name}! Я посчитаю Часы работы. Просто  пройди опрос после рабочего дня!".format(message.from_user), reply_markup=markup)
+    
 
 @bot.message_handler(content_types=['text'])
 def func(message):
@@ -68,7 +78,7 @@ def func(message):
         btn5 = types.KeyboardButton("АСВ")
         btn6 = types.KeyboardButton("ТНПС")
         btn7 = types.KeyboardButton("Тагазстрой")
-        btn8 = types.KeyboardButton("База2")да
+        btn8 = types.KeyboardButton("База2")
         btn9 = types.KeyboardButton("Полистрой")
         btn10 = types.KeyboardButton("Другое")
         markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10)
@@ -112,6 +122,14 @@ def func(message):
         markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10)
         bot.send_message(message.chat.id, text="Выберите Объект", reply_markup=markup)
         bot.register_next_step_handler(message, han) 
+    
+    elif(message.text == "/start"):
+        user_id = message.chat.id 
+        sessions.update({ user_id: {'first_name': message.from_user.first_name} })
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn1 = types.KeyboardButton("Начать")
+        markup.add(btn1)
+        bot.send_message(message.chat.id, text="Привет, {0.first_name}! Я посчитаю Часы работы. Просто  пройди опрос после рабочего дня!".format(message.from_user), reply_markup=markup)
 
 
 @bot.message_handler(content_types=['text'])
@@ -136,6 +154,14 @@ def han(message):
         tech = [message.text] #нужно искать тут 
         bot.register_next_step_handler(message, han1)
 
+    elif(message.text == "/start"):
+        user_id = message.chat.id 
+        sessions.update({ user_id: {'first_name': message.from_user.first_name} })
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn1 = types.KeyboardButton("Начать")
+        markup.add(btn1)
+        bot.send_message(message.chat.id, text="Привет, {0.first_name}! Я посчитаю Часы работы. Просто  пройди опрос после рабочего дня!".format(message.from_user), reply_markup=markup)
+
 @bot.message_handler(content_types=['text'])
 def han1(message):
 
@@ -159,6 +185,14 @@ def han1(message):
         bot.register_next_step_handler(message, test)
         hour = [message.text] #нужно искать тут 
 
+    elif(message.text == "/start"):
+        user_id = message.chat.id 
+        sessions.update({ user_id: {'first_name': message.from_user.first_name} })
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn1 = types.KeyboardButton("Начать")
+        markup.add(btn1)
+        bot.send_message(message.chat.id, text="Привет, {0.first_name}! Я посчитаю Часы работы. Просто  пройди опрос после рабочего дня!".format(message.from_user), reply_markup=markup)
+
 
 @bot.message_handler(content_types=['text'])  #реагирует на любые сообщения
 def test(message):
@@ -174,6 +208,14 @@ def test(message):
                bot.reply_to(message, f'Ваш текст: {message.text}')
           bot.register_next_step_handler(message, save_link) #добавляем следующий шаг, перенаправляющий пользователя на message_input_step
 # Убрать клаву
+
+    elif(message.text == "/start"):
+        user_id = message.chat.id 
+        sessions.update({ user_id: {'first_name': message.from_user.first_name} })
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn1 = types.KeyboardButton("Начать")
+        markup.add(btn1)
+        bot.send_message(message.chat.id, text="Привет, {0.first_name}! Я посчитаю Часы работы. Просто  пройди опрос после рабочего дня!".format(message.from_user), reply_markup=markup)
 
 @bot.message_handler(content_types=['text'])          
 def save_link(message):
@@ -191,10 +233,30 @@ def save_link(message):
     btn1 = types.KeyboardButton("Новый день")
     markup.add(btn1)            
     bot.send_message(message.chat.id, text="{0.first_name}! Нажми кнопку завтра, после рабочего дня!".format(message.from_user), reply_markup=markup)
-    bot.register_next_step_handler(message, start)
+    bot.register_next_step_handler(message, newlist) 
+    
+@bot.message_handler(content_types=['text'])          
+def newlist(message):
+    if(message.text == "Новый день"):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn1 = types.KeyboardButton("Вчера День")
+        btn2 = types.KeyboardButton("Сегодня Ночь")
+        btn3 = types.KeyboardButton("Сегодня День")
+        markup.add(btn1, btn2, btn3)
+        bot.send_message(message.chat.id, text="Выберите день за который заполняете часы", reply_markup=markup)
+        bot.register_next_step_handler(message, func) 
+
+    elif(message.text == "/start"):
+        user_id = message.chat.id 
+        sessions.update({ user_id: {'first_name': message.from_user.first_name} })
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn1 = types.KeyboardButton("Начать")
+        markup.add(btn1)
+        bot.send_message(message.chat.id, text="Привет, {0.first_name}! Я посчитаю Часы работы. Просто  пройди опрос после рабочего дня!".format(message.from_user), reply_markup=markup)
+    
     
 
 
 
 
-bot.polling(none_stop=True, interval=0)
+bot.infinity_polling()
