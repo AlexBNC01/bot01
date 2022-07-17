@@ -6,6 +6,11 @@ from datetime import timedelta
 from datetime import time
 #import pytz
 
+# import httplib2
+# from oauth2client.service_account import ServiceAccountCredentials
+# import apiclient.discovery
+
+import gspread
 
 sessions = {}
 
@@ -31,7 +36,7 @@ gas INTEGER
 connect.commit()
 
 
-bot = telebot.TeleBot('5256798982:AAHXhxQyopyvjF3PnQYSKmtTRiIElV3toYc')
+bot = telebot.TeleBot('5326877902:AAGJwL_6A5FUUlq-JymAVhfOkcw2IRLcqxM')
 @bot.message_handler(commands=['start'])
 def start(message):
     if(message.text == "/start"):
@@ -199,7 +204,7 @@ def test(message):
     sessions[message.chat.id].update({'hour': message.text})
     gas = [message.text] #нужно искать тут 
     
-    if (message.text in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '4,5', '5,5', '6,5', '7,5', '8,5', '9,5', '10,5', '11,5', '12,5', '4.3', '5.3', '6.3', '7.3', '8.3', '9.3', '10.3', '11.3', '12.3', '4.5', '5.5', '6.5', '7.5', '8.5', '9.5', '10.5', '11.5', '12.5', '4,3', '5,3', '6,3', '7,3', '8,3', '9,3', '10,3', '11,3', '12,3']):    #Если содержимое == 'One',то 
+    if (message.text in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '4,5', '5,5', '6,5', '7,5', '8,5', '9,5', '10,5', '11,5', '12,5', '13,5', '14,5', '15,5', '4.3', '5.3', '6.3', '7.3', '8.3', '9.3', '10.3', '11.3', '12.3', '13.3', '14.3', '15.3', '4.5', '5.5', '6.5', '7.5', '8.5', '9.5', '10.5', '11.5', '12.5', '13.5', '14.5', '15.5', '4,3', '5,3', '6,3', '7,3', '8,3', '9,3', '10,3', '11,3', '12,3' '13,3', '14,3', '15,3']):    #Если содержимое == 'One',то 
           bot.reply_to(message, 'Сколько сегодня заправились? (в литрах)')   #Bot reply 'Введите текст'
           @bot.message_handler(content_types=['text'])  #Создаём новую функцию ,реагирующую на любое сообщение
           def message_input_step(message):
@@ -235,6 +240,30 @@ def save_link(message):
     bot.send_message(message.chat.id, text="{0.first_name}! Нажми кнопку завтра, после рабочего дня!".format(message.from_user), reply_markup=markup)
     bot.register_next_step_handler(message, newlist) 
     
+    # CREDENTIALS_FILE = 'my-project-0960-347119-d1b405a50e7a.json'
+    # credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive'])
+    # httpAuth = credentials.authorize(httplib2.Http()) # Авторизуемся в системе
+    # service = apiclient.discovery.build('sheets', 'v4', http = httpAuth) # Выбираем работу с таблицами и 4 версию API
+
+    # service.spreadsheets().values().batchUpdate(spreadsheetId = '1tRz0JV1zyPwCDz2QNCxwBoWIpo5er1z1WKdvblvZGcs', body = {
+    # "valueInputOption": "USER_ENTERED", # Данные воспринимаются, как вводимые пользователем (считается значение формул)
+    # "data": [
+    #     {"range": "Лист номер один!C1:J2",
+    #      "majorDimension": "ROWS",     # Сначала заполнять строки, затем столбцы
+    #      "values": [
+    #                 ["ID", "Имя", "Дата/Время", "Время суток", "Заказчик", "Техника", "Часы", "Топливо"], # Заполняем первую строку
+    #                 [message.chat.id, input_data['first_name'], input_data['data'], input_data['day'], input_data['objectt'], input_data['tech'], input_data['hour'], input_data['gas']]  # Заполняем вторую строку
+    #                ]}
+    # ]
+    # }).execute()
+
+    gs = gspread.service_account(filename='my-project-0960-347119-d1b405a50e7a.json')  # подключаем файл с ключами и пр.
+    sh = gs.open_by_key('1tRz0JV1zyPwCDz2QNCxwBoWIpo5er1z1WKdvblvZGcs')  # подключаем таблицу по ID
+    worksheet = sh.sheet1  # получаем первый лист
+    worksheet.append_row([message.chat.id, input_data['first_name'], input_data['data'], input_data['day'], input_data['objectt'], input_data['tech'], input_data['hour'], input_data['gas']])
+
+
+    
 @bot.message_handler(content_types=['text'])          
 def newlist(message):
     if(message.text == "Новый день"):
@@ -253,7 +282,8 @@ def newlist(message):
         btn1 = types.KeyboardButton("Начать")
         markup.add(btn1)
         bot.send_message(message.chat.id, text="Привет, {0.first_name}! Я посчитаю Часы работы. Просто  пройди опрос после рабочего дня!".format(message.from_user), reply_markup=markup)
-    
+
+
     
 
 
